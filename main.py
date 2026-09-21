@@ -51,3 +51,36 @@ def obtener_producto(id: int):
         if producto["id"] == id:
             return producto
     raise HTTPException(status_code=404, detail=f"Producto con id {id} no encontrado")
+
+# Crea un producto nuevo
+@app.post("/productos")
+def crear_producto(producto: Producto):
+    for item in productos:
+        if item["id"] == producto.id:
+            raise HTTPException(status_code=400, detail="El id ya existe")
+
+    nuevo_producto = producto.model_dump()
+    productos.append(nuevo_producto)
+    return nuevo_producto
+
+# Actualiza un producto
+@app.put("/productos/{id}")
+def actualizar_producto(id: int, producto: Producto):
+    for indice, item in enumerate(productos):
+        if item["id"] == id:
+            datos = producto.model_dump()
+            datos["id"] = id
+            productos[indice] = datos
+            return datos
+
+    raise HTTPException(status_code=404, detail=f"Producto con id {id} no encontrado")
+
+# Elimina un producto
+@app.delete("/productos/{id}")
+def eliminar_producto(id: int):
+    for indice, producto in enumerate(productos):
+        if producto["id"] == id:
+            eliminado = productos.pop(indice)
+            return eliminado
+
+    raise HTTPException(status_code=404, detail=f"Producto con id {id} no encontrado")
