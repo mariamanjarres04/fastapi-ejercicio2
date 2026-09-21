@@ -55,3 +55,8 @@ productos = [
 @app.get("/productos")
 def obtener_productos():
     return productos
+
+@app.get("/productos")
+def obtener_productos():
+    return productos
+
