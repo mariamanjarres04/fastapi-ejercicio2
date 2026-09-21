@@ -20,10 +20,29 @@ productos = [
     {"id": 5, "nombre": "Memoria usb", "precio": 47000, "categoria": "electrónica", "quantity": 8},
 ]
 
-# Lista los productos
+# Lista, filtra y pagina los productos
 @app.get("/productos")
-def obtener_productos():
-    return productos
+def obtener_productos(
+    skip: int = 0,
+    limit: int = 10,
+    categoria: str | None = None,
+    busqueda: str | None = None
+):
+    resultado = productos
+
+    if categoria:
+        resultado = [
+            producto for producto in resultado
+            if producto["categoria"].lower() == categoria.lower()
+        ]
+
+    if busqueda:
+        resultado = [
+            producto for producto in resultado
+            if busqueda.lower() in producto["nombre"].lower()
+        ]
+
+    return resultado[skip:skip + limit]
 
 # Busca un producto por su id
 @app.get("/productos/{id}")
